@@ -366,7 +366,7 @@ function add_indicator_constraint(model::Model, idx::Vector{Cint}, coeff::Vector
                       Ptr{Cint},
                       Ptr{Cdouble},
                       Ptr{Cchar}),
-                      model.env.ptr, model.lp, indicator, comp,
+                      model.env.ptr, model.lp, indicator-1, comp,
                       nzcnt, rhs, sense, idx.-1, coeff, C_NULL)
     if stat != 0
         throw(CplexError(model.env, stat))
