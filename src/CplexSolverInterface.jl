@@ -150,6 +150,30 @@ function addconstr!(m::CplexMathProgModel, varidx, coef, lb, ub)
   end
 end
 
+function addindconstr!(m::CplexMathProgModel, ind, comp, varidx, coef, lb, ub)
+  neginf = typemin(eltype(lb))
+  posinf = typemax(eltype(ub))
+
+  rangeconstrs = any((lb .!= ub) & (lb .> neginf) & (ub .< posinf))
+  if rangeconstrs
+    warn("Julia Cplex interface doesn't properly support range (two-sided) constraints.")
+    add_rangeconstrs!(m.inner, [0], varidx, float(coef), float(lb), float(ub))
+  else
+    if lb == ub
+      rel = 'E'
+      rhs = lb
+    elseif lb > neginf
+      rel = 'G'
+      rhs = lb
+    else
+      @assert ub < posinf
+      rel = 'L'
+      rhs = ub
+    end
+    add_indicator_constraint!(m.inner, varidx, coef, rel, rhs, ind, comp)
+  end
+end
+
 getconstrmatrix(m::CplexMathProgModel) = get_constr_matrix(m.inner)
 
 setsense!(m::CplexMathProgModel, sense) = set_sense!(m.inner, sense)
