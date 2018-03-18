@@ -1,3 +1,7 @@
+if VERSION >= v"0.7.0-DEV.3382"
+    using Libdl
+end
+
 depsfile = joinpath(dirname(@__FILE__),"deps.jl")
 if isfile(depsfile)
     rm(depsfile)
@@ -17,7 +21,7 @@ end
 
 base_env = "CPLEX_STUDIO_BINARIES"
 
-cpxvers = ["1260","1261","1262","1263","1270", "1271","128"]
+cpxvers = ["1260","1261","1262","1263","1270", "1271","128","1280"]
 
 libnames = String["cplex"]
 for v in reverse(cpxvers)
